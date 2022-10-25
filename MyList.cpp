@@ -43,7 +43,7 @@ template<typename T>
 bool MyList<T>::push(T val) {
     bool f = true;
     if (count == size - 1) resize();
-    if (beginInd != -1) {
+    if (size != 0) {
         int tmpInd = array[freeBeginInd].next;
         array[freeBeginInd].value = val;
         array[freeBeginInd].next = beginInd;
@@ -63,21 +63,24 @@ bool MyList<T>::push(T val, int ind) {
         push(val);
     } else {
         if (count == size - 1) resize();
-        if (ind < count && beginInd != -1) {
+        if (ind >= 0 && ind < count && size != 0) {
             auto it1 = begin();
             it1++;
-            int i = 0;
+            int i = 1;
             for (auto it2 = begin(); it1 != end(); it1++, it2++, i++) {
                 stat++;
                 if (i == ind) {
-                    int cInd = it1.ind;
+                    int cInd = freeBeginInd;
                     int pInd = it2.ind;
                     int tmpInd = array[cInd].next;
+
                     array[cInd].value = val;
-                    array[cInd].next = array[pInd].next;
-                    array[pInd].next = freeBeginInd;
+                    array[cInd].next = it1.ind;
+                    array[pInd].next = cInd;
+
                     freeBeginInd = tmpInd;
                     count++;
+                    break;
                 }
             }
 
@@ -124,6 +127,7 @@ bool MyList<T>::pop(T val) {
                 freeBeginInd = cInd;
                 count--;
                 f = true;
+                break;
             }
         }
     }
@@ -136,7 +140,7 @@ bool MyList<T>::popByInd(int ind) {
     Iterator it1 = begin();
     int cInd = it1.ind;
     stat = 0;
-    if (it1.ind == ind) {
+    if (ind == 0) {
         beginInd = array[cInd].next;
         array[cInd].next = freeBeginInd;
         freeBeginInd = cInd;
@@ -144,7 +148,7 @@ bool MyList<T>::popByInd(int ind) {
         stat++;
         f = true;
     } else {
-        int i = 0;
+        int i = 1;
         it1++;
         for (auto it2 = begin(); it1 != end(); it1++, it2++, i++) {
             stat++;
@@ -156,6 +160,7 @@ bool MyList<T>::popByInd(int ind) {
                 freeBeginInd = cInd;
                 count--;
                 f = true;
+                break;
             }
         }
     }
@@ -165,10 +170,13 @@ bool MyList<T>::popByInd(int ind) {
 template<typename T>
 T MyList<T>::readValue(int ind) {
     T val = 0;
-    for (auto it = begin(); it != end(); it++) {
-        if (it.ind == ind) {
-            val = *it;
-            break;
+    if (ind < count && ind >= 0) {
+        int i = 0;
+        for (auto it = begin(); it != end(); it++, i++) {
+            if (i == ind) {
+                val = *it;
+                break;
+            }
         }
     }
     return val;
@@ -177,10 +185,11 @@ T MyList<T>::readValue(int ind) {
 template<typename T>
 bool MyList<T>::changeValue(int ind, T val) {
     bool f = false;
-    if (ind < count) {
-        for (auto it = begin(); it != end(); it++) {
-            if (it.ind == ind) {
-                array[ind].value = val;
+    if (ind < count && ind >= 0) {
+        int i = 0;
+        for (auto it = begin(); it != end(); it++, i++) {
+            if (i == ind) {
+                array[it.ind].value = val;
                 f = true;
                 break;
             }
@@ -192,22 +201,21 @@ bool MyList<T>::changeValue(int ind, T val) {
 template<typename T>
 int MyList<T>::getIndByValue(T val) {
     int j = -1;
-    for (auto it = begin(); it != end(); it++) {
+    int i = 0;
+    for (auto it = begin(); it != end(); it++, i++) {
         if (*it == val) {
-            j = it.ind;
+            j = i;
             break;
         }
     }
     return j;
 }
 
-
 template<typename T>
 void MyList<T>::print() {
-    for (int i = 0; i < size; ++i) {
-        cout << array[i].value << endl;
+    for (auto it = begin(); it != end(); it++) {
+        cout << array[it.ind].value << " ";
     }
-    cout << endl;
 }
 
 template<typename T>

@@ -6,6 +6,8 @@
 template<typename T>
 class MyList {
 public:
+    friend class Node<T>;
+
     class Iterator {
     public:
         Iterator(Node<T> *array_, int ind_) {
@@ -75,9 +77,6 @@ public:
 
     bool isExist(T val);
 
-    void resize();
-
-
     int stat;
 
 private:
@@ -86,6 +85,8 @@ private:
     int beginInd;
     int freeBeginInd;
     int count;
+
+    void resize();
 };
 
 

@@ -21,7 +21,7 @@ void menu() {
          << "0  - Exit" << endl;
 }
 
-void insertMenu(MyList<int> list) {
+void insertMenu(MyList<int> &list, int len) {
     int choice = -1;
     while (choice != 0) {
         cout << "_____Choose what you want to do:" << endl
@@ -34,7 +34,7 @@ void insertMenu(MyList<int> list) {
         switch (choice) {
             case 1:
                 srand(time(nullptr));
-                for (int i = 0; i < list.sizeOfList(); ++i) {
+                for (int i = 0; i < len; ++i) {
                     list.push(-50 + rand() % 100);
                 }
                 break;
@@ -58,7 +58,7 @@ void insertMenu(MyList<int> list) {
     }
 }
 
-void deleteMenu(MyList<int> list) {
+void deleteMenu(MyList<int> &list) {
     int choice = -1;
     while (choice != 0) {
         cout << "_____Choose what you want to do:" << endl
@@ -93,6 +93,10 @@ int main() {
     int key = -1, len = -1;
     cout << "Create a list. Enter the desired number of items: ";
     cin >> len;
+    while (len < 0) {
+        cout << "Invalid input. Try again: ";
+        cin >> len;
+    }
     MyList<int> list(len);
     while (1) {
         menu();
@@ -103,49 +107,71 @@ int main() {
                 cout << "Size of list: " << list.sizeOfList() << endl;
                 break;
             case 2:
-                list.clear();
-                cout << "Done" << endl;
+                if (list.isEmpty()) {
+                    cout << "List is empty" << endl;
+                } else {
+                    list.clear();
+                    cout << "Done" << endl;
+                }
                 break;
             case 3:
                 if (list.isEmpty()) cout << "List is empty" << endl;
                 else cout << "List isn't empty" << endl;
                 break;
             case 4:
-                int val;
-                cout << "Enter value: ";
-                cin >> val;
-                if (list.isExist(val)) cout << "Element is in the list" << endl;
-                else cout << "Element isn't in the list" << endl;
+                if (list.isEmpty()) {
+                    cout << "List is empty" << endl;
+                } else {
+                    int val;
+                    cout << "Enter value: ";
+                    cin >> val;
+                    if (list.isExist(val)) cout << "Element is in the list" << endl;
+                    else cout << "Element isn't in the list" << endl;
+                }
                 break;
             case 5:
-                int ind;
-                cout << "Enter index: ";
-                cin >> ind;
-                cout << "Value of this index: " << list.readValue(ind) << endl;
+                if (list.isEmpty()) {
+                    cout << "List is empty" << endl;
+                } else {
+                    int ind;
+                    cout << "Enter index from 0 to " << list.sizeOfList() - 1 << ": ";
+                    cin >> ind;
+                    cout << "Value of this index: " << list.readValue(ind) << endl;
+                }
                 break;
             case 6:
-                cout << "Enter index: ";
-                cin >> ind;
-                cout << "Enter value: ";
-                cin >> val;
-                list.changeValue(ind, val);
-                cout << "Done" << endl;
+                if (list.isEmpty()) {
+                    cout << "List is empty" << endl;
+                } else {
+                    int ind, val;
+                    cout << "Enter index from 0 to " << list.sizeOfList() - 1 << ": ";
+                    cin >> ind;
+                    cout << "Enter value: ";
+                    cin >> val;
+                    list.changeValue(ind, val);
+                    cout << "Done" << endl;
+                }
                 break;
             case 7:
-                cout << "Enter value: ";
-                cin >> val;
-                ind = list.getIndByValue(val);
-                if (ind != -1) cout << "Element position: " << ind << endl;
-                else cout << "This element isn't in the list" << endl;
+                if (list.isEmpty()) {
+                    cout << "List is empty" << endl;
+                } else {
+                    int val, ind;
+                    cout << "Enter value: ";
+                    cin >> val;
+                    ind = list.getIndByValue(val);
+                    if (ind != -1) cout << "Element position: " << ind << endl;
+                    else cout << "This element isn't in the list" << endl;
+                }
                 break;
             case 8:
-                insertMenu(list);
+                insertMenu(list, len);
                 break;
             case 9:
                 deleteMenu(list);
                 break;
             case 10:
-                cout << list.stat << endl;
+                cout << "Laboriousness: " << list.stat << endl;
                 break;
             case 11:
                 list.print();

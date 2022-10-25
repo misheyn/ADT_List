@@ -7,7 +7,7 @@ public:
     T value;
     int next;
 
-    Node() : next(-1), value(0) {}
+    Node() : next(-1) {}
 };
 
 #endif //ADT_LIST_NODE_H
